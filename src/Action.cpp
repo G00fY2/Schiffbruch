@@ -209,7 +209,7 @@ namespace Action
 
             if (Frage == 1)
             {
-                Game::NeuesSpiel(true);
+                Game::NewGame(true);
                 return;
             }
             Frage = -1;
@@ -251,7 +251,7 @@ namespace Action
 
             if (Frage == 1)
             {
-                Game::NeuesSpiel(false);
+                Game::NewGame(false);
                 return;
             }
             Frage = -1;
@@ -351,7 +351,7 @@ namespace Action
             if (Frage == 2)
                 Spielzustand = State::OUTRO;
             else
-                Game::NeuesSpiel(false);
+                Game::NewGame(false);
 
             Frage = -1;
             break;

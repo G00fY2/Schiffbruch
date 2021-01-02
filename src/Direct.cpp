@@ -353,7 +353,7 @@ namespace Direct
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) // Logo Abbrechen
             {
                 StopSound(Sound::LOGO);
-                Game::NeuesSpiel(false);
+                Game::NewGame(false);
                 return 2;
             }
         }

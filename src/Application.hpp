@@ -13,7 +13,7 @@ public:
     Application(const std::string& name, HINSTANCE instance_handle);
 
     void run();
-    void update();
+    static void update();
 
 private:
     void process_events();

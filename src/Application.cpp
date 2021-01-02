@@ -6,7 +6,6 @@
 #include "Math.hpp"
 #include "Sound.hpp"
 #include "Renderer.hpp"
-#include "Routing.hpp"
 #include "State.hpp"
 #include "World.hpp"
 
@@ -14,7 +13,6 @@
 
 #include <ctime>
 #include <cstdlib>
-#include <exception>
 
 Application::Application(const std::string& name, HINSTANCE instance_handle)
     : m_window({MAXX, MAXY}, name, sf::Style::Fullscreen)
@@ -30,15 +28,14 @@ Application::Application(const std::string& name, HINSTANCE instance_handle)
     Direct::InitDDraw(m_window.getSystemHandle());
 
     Spielzustand = State::LOGO;
-    Game::InitWaves(); // Nur zum Wavinitialisieren
+    Game::InitWaves(); // Only for Wavinitialisieren
 
-    srand(static_cast<unsigned>(std::time(nullptr))); // Random initialisieren
+    srand(static_cast<unsigned>(std::time(nullptr)));
 }
 
 void Application::process_events()
 {
-    sf::Event event;
-    while (m_window.pollEvent(event))
+    for (auto event = sf::Event{}; m_window.pollEvent(event);)
     {
         if (event.type == sf::Event::Closed)
         {
@@ -69,14 +66,17 @@ void Application::run()
             while (true)
             {
                 Bild++;
-                std::time_t Zeitsave = std::time(nullptr);
-                if (m_time + 5 < Zeitsave)
+                const auto timeSave = std::time(nullptr);
+                if (m_time + 5 < timeSave)
                 {
-                    m_time = Zeitsave;
-                    LastBild = (LastBild + Bild / 5) / 2;
+                    m_time = timeSave;
+                    LastBild = static_cast<short>((LastBild + Bild / 5) / 2);
                     Bild = 0;
+                	
                     if (LastBild == 0)
+                    {
                         LastBild = 50;
+                    }
 
                     // BilderproSec ausgeben
                     /*
@@ -90,21 +90,25 @@ void Application::run()
                 if (Spielzustand == State::LOGO)
                 {
                     if (Direct::CheckKey() == 2) // Das Keyboard abfragen
+                    {
                         break;
+                    }
 
                     Renderer::ZeigeLogo(); // Bild auffrischen
                 }
                 else if ((Spielzustand == State::INTRO) || (Spielzustand == State::RESCUED))
                 {
-                    if (Direct::CheckKey() == 0) // Das Keyboard abfragen
-                    {
-                        m_window.close();
-                        break;
-                    }
+	                if (Direct::CheckKey() == 0) // Das Keyboard abfragen
+	                	{
+	                	m_window.close();
+	                	break;
+	                	}
 
-                    Math::Animationen(); // Animationen weiterschalten
-                    if (!Guy.Aktiv) // Aktionen starten
-                        Action::handler(Guy.Aktion);
+                	Math::Animationen(); // Animationen weiterschalten
+                	if (!Guy.Aktiv) // Aktionen starten
+                    {
+                		Action::handler(Guy.Aktion);
+					}
 
                     Renderer::ZeigeIntro(); // Bild auffrischen
                 }
@@ -116,7 +120,9 @@ void Application::run()
                     if ((Stunden >= 12) && (Minuten != 0) && (Guy.Aktion != Action::DAY_END)) // Hier ist der Tag zuende
                     {
                         if (Guy.Aktion == Action::LOOKOUT)
-                            Chance -= 1 + Scape[Guy.Pos.x][Guy.Pos.y].Hoehe;
+                        {
+	                        Chance -= 1 + Scape[Guy.Pos.x][Guy.Pos.y].Hoehe;
+                        }
 
                         Guy.Aktiv = false;
                         Guy.AkNummer = 0;
@@ -133,7 +139,9 @@ void Application::run()
                     Renderer::LimitScroll(); // Das Scrollen an die Grenzen der Landschaft anpassen
                     Math::Animationen(); // Die Animationsphasen weiterschalten
                     if (!Guy.Aktiv) // Die Aktionen starten
+                    {
                         Action::handler(Guy.Aktion);
+                    }
                     Renderer::Zeige(); // Das Bild zeichnen
                 }
                 else if (Spielzustand == State::OUTRO)
